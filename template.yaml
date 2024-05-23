@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  task-manager-r-backend
+
+  Sample SAM Template for task-manager-r-backend
+
+Globals:
+  Function:
+    Timeout: 10
+
+Resources:
+  TaskTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: TaskTable
+      AttributeDefinitions:
+        - AttributeName: taskId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: taskId
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  CreateTaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/taskHandler.createTask
+      Runtime: nodejs20.x
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TaskTable
+      Events:
+        CreateTaskApi:
+          Type: Api
+          Properties:
+            Path: /tasks
+            Method: post
+
+  GetTasksFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/taskHandler.getTasks
+      Runtime: nodejs20.x
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TaskTable
+      Events:
+        GetTasksApi:
+          Type: Api
+          Properties:
+            Path: /tasks
+            Method: get
+
+Outputs:
+  CreateTaskApi:
+    Description: "API Gateway endpoint URL for CreateTask function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/tasks"
+  GetTasksApi:
+    Description: "API Gateway endpoint URL for GetTasks function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/tasks"
