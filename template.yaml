@@ -32,6 +32,9 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref TaskTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TaskTable
       Events:
         CreateTaskApi:
           Type: Api
@@ -47,6 +50,9 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref TaskTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TaskTable
       Events:
         GetTasksApi:
           Type: Api
