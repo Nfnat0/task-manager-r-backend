@@ -8,6 +8,11 @@ Description: >
 Globals:
   Function:
     Timeout: 30
+  Api:
+    Cors:
+      AllowMethods: "'OPTIONS,POST,GET'"
+      AllowHeaders: "'Content-Type'"
+      AllowOrigin: "'*'"
 
 Resources:
   TaskTable:
