@@ -19,6 +19,11 @@ module.exports.createTask = async (event) => {
 
   return {
     statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,DELETE',
+    },
     body: JSON.stringify({ message: 'Task created successfully', taskId: taskId }),
   };
 };
@@ -32,6 +37,11 @@ module.exports.getTasks = async (event) => {
 
   return {
     statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,DELETE',
+    },
     body: JSON.stringify(result.Items),
   };
 };
