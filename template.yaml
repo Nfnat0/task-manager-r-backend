@@ -10,7 +10,7 @@ Globals:
     Timeout: 30
   Api:
     Cors:
-      AllowMethods: "'OPTIONS,POST,GET'"
+      AllowMethods: "'OPTIONS,POST,GET,DELETE,PUT'"
       AllowHeaders: "'Content-Type'"
       AllowOrigin: "'*'"
 
@@ -65,6 +65,60 @@ Resources:
             Path: /tasks
             Method: get
 
+  GetTaskByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/taskHandler.getTaskById
+      Runtime: nodejs20.x
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TaskTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TaskTable
+      Events:
+        GetTaskByIdApi:
+          Type: Api
+          Properties:
+            Path: /tasks/{id}
+            Method: get
+
+  UpdateTaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/taskHandler.updateTask
+      Runtime: nodejs20.x
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TaskTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TaskTable
+      Events:
+        UpdateTaskApi:
+          Type: Api
+          Properties:
+            Path: /tasks/{id}
+            Method: put
+
+  DeleteTaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/taskHandler.deleteTask
+      Runtime: nodejs20.x
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TaskTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TaskTable
+      Events:
+        DeleteTaskApi:
+          Type: Api
+          Properties:
+            Path: /tasks/{id}
+            Method: delete
+
 Outputs:
   CreateTaskApi:
     Description: "API Gateway endpoint URL for CreateTask function"
@@ -72,3 +126,12 @@ Outputs:
   GetTasksApi:
     Description: "API Gateway endpoint URL for GetTasks function"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/tasks"
+  GetTaskByIdApi:
+    Description: "API Gateway endpoint URL for GetTaskById function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/tasks/{id}"
+  UpdateTaskApi:
+    Description: "API Gateway endpoint URL for UpdateTask function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/tasks/{id}"
+  DeleteTaskApi:
+    Description: "API Gateway endpoint URL for DeleteTask function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/tasks/{id}"
